@@ -9,15 +9,15 @@ Default web page open on port 8888, username, password if not specified, the def
 
 Note: Because go-sqlite3 is used, each platform needs to be compiled separately.
 
-```go
-. /Yi -token githubToken -pwd password -f 1.txt -user username -path /Users/yhy/CodeQL/codeql
+```shell
+./Yi -token githubToken -pwd password -f 1.txt -user username -path /Users/yhy/CodeQL/codeql
 ```
 
 Considering that there are a bit too many projects to monitor, the github token is required to prevent access from being restricted.
 
 **-path** must be specified to refer to the top-level directory of codeql's various language rulebases.
 
-! [image-20221213212521373](images/image-20221213212521373.png)
+![image-20221213212521373](images/image-20221213212521373.png)
 
 Other parameters
 
@@ -49,21 +49,21 @@ It's also a good idea to use `root` for execution, because when you use `makefil
 ```
 
 # Security risk
-When `codeql` generates a database, it executes a `makefile`-like build process under the project, and there is a security risk here.
+When `codeql` generates a database, it executes a build process similar to a `makefile` under the project, which poses a security risk.
 
-So be sure to monitor **trusted** **trusted** **trusted** projects, **don't get a shell bounced**.
+Therefore, it is crucial to monitor projects that are **trusted** **trusted** **trusted** to **prevent potential shell vulnerabilities**.
 
-All damages caused by **Trusted** are not related to this project or its author***.
+**Any losses incurred are not the responsibility of this project or its authors.**
 
-All damages caused by ** are not related to this project or its authors**.
+**Any losses incurred are not the responsibility of this project or its authors.**
 
-**The project and its author are not responsible for any damages caused by ***the project and its author**.
+**Any losses incurred are not the responsibility of this project or its authors.**
 
 # Function
 
-! [image-20221213143603327](images/image-20221213143603327.png)
+![image-20221213143603327](images/image-20221213143603327.png)
 
-! [image-20221215162315622](images/image-20221215162315622.png)
+![image-20221215162315622](images/image-20221215162315622.png)
 
 - [x] Monitor projects daily for updates, and fetch/generate databases for Codeql scanning if they are updated
 - [x] monitor config file for updates, add new ql rules to fetch from database for scanning
@@ -80,12 +80,12 @@ All damages caused by ** are not related to this project or its authors**.
 
 # Known issues
 
-- [ x ] http request with occasional `EOF` Solution: limit github access rate.
+- [x] http request with occasional `EOF` Solution: limit github access rate.
 
 
 # 🌟 Star
 
-[! [Stargazers over time](https://starchart.cc/ZhuriLab/Yi.svg)](https://starchart.cc/ZhuriLab/Yi)
+[![Stargazers over time](https://starchart.cc/ZhuriLab/Yi.svg)](https://starchart.cc/ZhuriLab/Yi)
 
 # 📄 Disclaimer
 
