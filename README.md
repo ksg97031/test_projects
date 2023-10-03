@@ -1,96 +1,96 @@
-# 弈
-以有算无
+# 弈 (the game of go)
+以有算无 (To have calculation is to have everything; without it, you have nothing)
 
->   [lgtm](https://lgtm.com/) 要关闭了，就搞了一个自己的监控工具。也方便自己编写好规则后，自动化批量扫描, 高效捡洞。
+> [lgtm](https://lgtm.com/) is closing down, so I made my own monitoring tool. It's also easy to automate batch scanning after writing your own rules, so you can pick up holes efficiently.
 
-每天检查 github 项目是否更新，自动获取/生成数据库查询,自动运行 CodeQL 规则查询,高效捡洞.
+Every day, check whether the github project is updated, automatically get/generate database query, automatically run CodeQL rule query, efficiently pick up holes.
 
-默认 web 页面开放在8888端口, 用户名，密码如果没有指定，用户名默认为 yhy, 密码为随机的，会输出到控制台
+Default web page open on port 8888, username, password if not specified, the default username is yhy, the password is random, will be output to the console.
 
-注：因为使用了 go-sqlite3,每个平台需要单独编译
+Note: Because go-sqlite3 is used, each platform needs to be compiled separately.
 
 ```go
-./Yi -token githubToken -pwd 密码 -f 1.txt -user 用户名 -path /Users/yhy/CodeQL/codeql
+. /Yi -token githubToken -pwd password -f 1.txt -user username -path /Users/yhy/CodeQL/codeql
 ```
 
-考虑到监控的项目有点多，所以需要 github token，防止访问被限制.
+Considering that there are a bit too many projects to monitor, the github token is required to prevent access from being restricted.
 
-**-path** 必须要指定，指 codeql 各种语言规则库的顶级目录
+**-path** must be specified to refer to the top-level directory of codeql's various language rulebases.
 
-![image-20221213212521373](images/image-20221213212521373.png)
+! [image-20221213212521373](images/image-20221213212521373.png)
 
-其它参数
+Other parameters
 
 ```go
--p 代理
--t 运行时监控一个项目
--f 运行后要监控的项目, 每行一个github项目地址 url
--port web 访问端口，默认 8888 端口
--thread 扫描协程数，默认 5 个
+-p proxy
+-t Monitor a project while running
+-f the project to monitor after running, one github project address per line url
+-port web access port, default is port 8888
+-thread The number of scanning threads, default is 5.
 
--t -f 指定一个即可，或者都不使用，通过 Web 界面的新增按钮，慢慢添加
+-t -f Specify one or none, add them slowly via the Add button in the web interface.
 ```
 
-运行后，会自动在当前目录下生成相关文件夹(下载、生成的数据库，clone的仓库)和 ql 规则配置文件。
+After running, it will automatically generate the relevant folders (downloads, generated databases, clone repositories) and ql rule configuration files in the current directory.
 
 
-注: 运行该程序的机器上要安装好 **Codeql**(加入环境变量)、**Git**、**Docker**、**Go**
+Note: Run the program on a machine with **Codeql** (add environment variable), **Git**, **Docker**, **Go** installed.
 
-**Java**、**Maven**、**Gradle**(如果要监控 Java 项目的话,不然会导致数据库生成失败)
+**Java**, **Maven**, **Gradle** (if you want to monitor the Java project, otherwise it will lead to database generation failure)
 
-如果你需要其他语言，修改代码后，最好也安装好语言对应的编译工具。 emmmm 有没有各种语言都安装好的 docker
+If you need other languages, after modifying the code, it is best to also install the language corresponding to the compilation tool. emmmm is there a docker for all languages?
 
-还有就是最好使用 `root` 执行， 监控项目中使用 `makefile` 时，可能会有一些工具，机器上没有，导致数据库失败,比如:
+It's also a good idea to use `root` for execution, because when you use `makefile` in a monitoring project, there may be some tools that are not available on your machine that cause the database to fail, such as.
 
-```go
+``go
 [2022-12-14 16:34:26] [build-stdout] INFO: yq was not found, installing it
-[2022-12-14 16:34:30] [build-stderr] make: go: 权限不够
-[2022-12-14 16:34:30] [build-stderr] make: go: 权限不够
+[2022-12-14 16:34:30] [build-stderr] make: go: not enough permissions
+[2022-12-14 16:34:30] [build-stderr] make: go: not enough permissions
 ```
 
-# 安全隐患
-`codeql` 生成数据库时，会执行项目下的类似`makefile`的构建流程，这里存在安全隐患。
+# Security risk
+When `codeql` generates a database, it executes a `makefile`-like build process under the project, and there is a security risk here.
 
-所以一定要对 **可信** **可信** **可信** 的项目进行监控，**别被弹了 shell**。
+So be sure to monitor **trusted** **trusted** **trusted** projects, **don't get a shell bounced**.
 
-**造成的一切损失与本项目及其作者无关**
+All damages caused by **Trusted** are not related to this project or its author***.
 
-**造成的一切损失与本项目及其作者无关**
+All damages caused by ** are not related to this project or its authors**.
 
-**造成的一切损失与本项目及其作者无关**
+**The project and its author are not responsible for any damages caused by ***the project and its author**.
 
-# 功能
+# Function
 
-![image-20221213143603327](images/image-20221213143603327.png)
+! [image-20221213143603327](images/image-20221213143603327.png)
 
-![image-20221215162315622](images/image-20221215162315622.png)
+! [image-20221215162315622](images/image-20221215162315622.png)
 
--   [x] 每天监控项目是否是否更新，更新则获取/生成数据库，进行 Codeql 扫描
--   [x] 监控配置文件更新，新增 ql 规则从数据库中获取进行扫描
--   [x] 黑名单，有的规则会误报，看的时候将该扫描结果拉黑，以后再次扫描时该结果就不会在界面显示
+- [x] Monitor projects daily for updates, and fetch/generate databases for Codeql scanning if they are updated
+- [x] monitor config file for updates, add new ql rules to fetch from database for scanning
+- [x] blacklist, some rules will be false alarms, look at the time to blacklist the results of the scan, the results will not be displayed in the interface when scanning again in the future
 
 
 # TODO
 
--   [ ] 现在只是适配 Go,Java 语言，后期尽量适配主流语言,也可以修改项目中存在"Go","Java"的地方自己添加其他语言
--   [ ] codeql 创建数据库时 指定 --[no-]db-cluster 会自动创建所有语言的数据库, 如果不指定--language ，需要指定 github token 来 自动分析 --github-auth-stdin
--   [ ] 生成数据库可以下载
--   [ ] Docker 封装好各种语言及其编译工具
--   [ ] 读取本地 codeql 数据库，方便一些闭源或者私有项目
+- [ ] now only adapt Go, Java language, later try to adapt the mainstream language, you can also modify the project where there is "Go", "Java" to add their own other languages
+- [ ] codeql create database specify --[no-]db-cluster will automatically create database in all languages, if you don't specify --language, you need to specify github token to automatically analyze --github-auth-stdin
+- [ ] Generate databases for download
+- [ ] Docker wraps the languages and compilation tools.
+- [ ] Read local codeql databases for closed-source or private projects.
 
-# 已知问题
+# Known issues
 
--   [x] http 请求时，时不时的出现 `EOF` 解决方案：限制 github 访问速率
+- [ x ] http request with occasional `EOF` Solution: limit github access rate.
 
 
 # 🌟 Star
 
-[![Stargazers over time](https://starchart.cc/ZhuriLab/Yi.svg)](https://starchart.cc/ZhuriLab/Yi)
+[! [Stargazers over time](https://starchart.cc/ZhuriLab/Yi.svg)](https://starchart.cc/ZhuriLab/Yi)
 
-# 📄 免责声明
+# 📄 Disclaimer
 
-本工具仅面向合法授权的企业安全建设行为，在使用本工具进行检测时，您应确保该行为符合当地的法律法规，并且已经取得了足够的授权。
+This tool is only for legally authorized enterprise security construction behavior, when using this tool for inspection, you should ensure that the behavior is in accordance with local laws and regulations, and has obtained sufficient authorization.
 
-如您在使用本工具的过程中存在任何非法行为或造成的一切损失，您需**自行承担相应后果, 本项目及其作者将不承担任何法律及连带责任**。
+If you use this tool in the process of any illegal behavior or cause all the losses, you need to **self bear the corresponding consequences, this project and its author will not assume any legal and joint liability **.
 
-在使用本工具前，请您务必审慎阅读、充分理解各条款内容，限制、免责条款或者其他涉及您重大权益的条款可能会以加粗、加下划线等形式提示您重点注意。 除非您已充分阅读、完全理解并接受本协议所有条款，否则，请您不要使用本工具。您的使用行为或者您以其他任何明示或者默示方式表示接受本协议的，即视为您已阅读并同意本协议的约束。
+Before using this tool, please be sure to carefully read and fully understand the contents of the terms, limitations, disclaimers or other provisions involving your significant rights and interests may be bolded, underlined and other forms of attention. Unless you have fully read, fully understand and accept all the terms of this Agreement, please do not use this tool. Your use or any other express or implied acceptance of this Agreement shall be deemed that you have read and agreed to be bound by this Agreement.
