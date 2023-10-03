@@ -42,7 +42,7 @@ If you need other languages, after modifying the code, it is best to also instal
 
 It's also a good idea to use `root` for execution, because when you use `makefile` in a monitoring project, there may be some tools that are not available on your machine that cause the database to fail, such as.
 
-``go
+```go
 [2022-12-14 16:34:26] [build-stdout] INFO: yq was not found, installing it
 [2022-12-14 16:34:30] [build-stderr] make: go: not enough permissions
 [2022-12-14 16:34:30] [build-stderr] make: go: not enough permissions
@@ -91,6 +91,6 @@ All damages caused by ** are not related to this project or its authors**.
 
 This tool is only for legally authorized enterprise security construction behavior, when using this tool for inspection, you should ensure that the behavior is in accordance with local laws and regulations, and has obtained sufficient authorization.
 
-If you use this tool in the process of any illegal behavior or cause all the losses, you need to **self bear the corresponding consequences, this project and its author will not assume any legal and joint liability **.
+If you use this tool in the process of any illegal behavior or cause all the losses, you need to **self bear the corresponding consequences, this project and its author will not assume any legal and joint liability** .
 
 Before using this tool, please be sure to carefully read and fully understand the contents of the terms, limitations, disclaimers or other provisions involving your significant rights and interests may be bolded, underlined and other forms of attention. Unless you have fully read, fully understand and accept all the terms of this Agreement, please do not use this tool. Your use or any other express or implied acceptance of this Agreement shall be deemed that you have read and agreed to be bound by this Agreement.
