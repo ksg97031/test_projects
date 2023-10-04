@@ -11,5 +11,5 @@ var ConfigFileName = "config.yaml"
 // Default configuration file,  todo Note: Codeql Do not support the specified folder to run the rules
 var defaultYamlByte = []byte(`
 python_ql:
-  - python/ql/src/Security/ksg97031/Format.ql
+  - python/ql/src/experimental/Security/ksg97031/Format.ql
 `)

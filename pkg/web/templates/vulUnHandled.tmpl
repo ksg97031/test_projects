@@ -127,7 +127,7 @@
                             </td>
                             <td class="text-center">{{ $value.PushedAt }}</td>
                             <td class="text-center">
-                                <button type="button" data-mdb-ripple-centered="true" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#del{{ $value.Id }}">删除</button>
+                                <button type="button" data-mdb-ripple-centered="true" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#del{{ $value.Id }}">delete</button>
                                 <!-- Modal frame -->
                                 <div class="modal fade" id="del{{ $value.Id }}">
                                     <div class="modal-dialog">
@@ -154,7 +154,7 @@
                                     </div>
                                 </div>
 
-                                <button type="button" data-mdb-ripple-centered="true" class="btn btn-dark" data-bs-target="#blacklist{{ $value.Id }}" data-bs-toggle="modal">拉黑</button>
+                                <button type="button" data-mdb-ripple-centered="true" class="btn btn-dark" data-bs-target="#blacklist{{ $value.Id }}" data-bs-toggle="modal">block</button>
                                 <!-- Modal frame -->
                                 <div class="modal fade" id="blacklist{{ $value.Id }}">
                                     <div class="modal-dialog">

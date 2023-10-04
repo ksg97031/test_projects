@@ -21,7 +21,7 @@ import (
 func WriteFile(fileName string, fileData string) {
 	file, err := os.OpenFile(fileName, os.O_WRONLY|os.O_CREATE, 0666)
 	if err != nil {
-		fmt.Println("文件打开失败", err)
+		fmt.Println("File opens failed", err)
 	}
 	//Turn off the FILE
 	defer file.Close()
@@ -55,7 +55,7 @@ func SaveFile(path string, data []byte) (err error) {
 	if err == nil {
 		err = os.Remove(path)
 		if err != nil {
-			log.Println("旧文件删除失败", err.Error())
+			log.Println("Old file deletion fails", err.Error())
 		}
 	}
 
