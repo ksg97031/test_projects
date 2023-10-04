@@ -2,9 +2,10 @@ package db
 
 import (
 	"fmt"
+	"time"
+
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
-	"time"
 )
 
 /**
@@ -36,8 +37,8 @@ func AddVul(vul Vul) {
 		Project: vul.Project,
 		Url:     vul.Url,
 		Color:   "danger",
-		Title:   vul.Project + " 发现漏洞",
-		Msg:     fmt.Sprintf("漏洞类型: %s", vul.RuleId),
+		Title:   vul.Project + " Vulnerabilities found",
+		Msg:     fmt.Sprintf("Vulnerability Type: %s", vul.RuleId),
 	}
 	AddRecord(record)
 
@@ -47,7 +48,7 @@ func AddVul(vul Vul) {
 	GlobalDB.Create(&vul)
 }
 
-// GetVulsHandled 查看漏洞信息
+// GetVulsHandled View Vulnerability Information
 func GetVulsHandled(pageNum int, pageSize int, maps interface{}) (count int64, vuls []Vul) {
 	globalDBTmp := GlobalDB.Model(&Vul{})
 	query := maps.(map[string]interface{})
@@ -98,7 +99,7 @@ func DeleteVul(id string) {
 	globalDBTmp.Where("id = ?", id).Unscoped().Delete(&Vul{})
 }
 
-// ExistVul  判断数据库中ip、端口是否存在
+// ExistVul  Determine whether ip and port exist in the database
 func ExistVul(id string) (bool, Vul) {
 	var vul Vul
 	globalDBTmp := GlobalDB.Model(&Vul{})
@@ -111,7 +112,7 @@ func ExistVul(id string) (bool, Vul) {
 	return false, vul
 }
 
-// UpdateHandled 更新字段
+// UpdateHandled Update Fields
 func UpdateHandled(id string) {
 	globalDBTmp := GlobalDB.Model(&Vul{})
 	globalDBTmp.Where("id = ?", id).Update("handled", true)

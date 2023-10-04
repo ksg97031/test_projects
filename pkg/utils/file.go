@@ -23,12 +23,12 @@ func WriteFile(fileName string, fileData string) {
 	if err != nil {
 		fmt.Println("文件打开失败", err)
 	}
-	//及时关闭file句柄
+	//Turn off the FILE
 	defer file.Close()
-	//写入文件时，使用带缓存的 *Writer
+	//When writing to the file, use the cache *writeer
 	write := bufio.NewWriter(file)
 	write.WriteString(fileData)
-	//Flush将缓存的文件真正写入到文件中
+	//Flush really writes the cache file into the file
 	write.Flush()
 }
 
@@ -96,7 +96,7 @@ func DeCompress(zipFile, dest string) error {
 	return nil
 }
 
-// RemoveDir 删除 ./github 下所有的项目
+// RemoveDir delete ./github All projects
 func RemoveDir() {
 	Pwd, _ := filepath.Abs(filepath.Dir(os.Args[0]))
 	dir, _ := ioutil.ReadDir(Pwd + "/github")
@@ -105,9 +105,9 @@ func RemoveDir() {
 	}
 }
 
-// Exists 判断所给路径文件/文件夹是否存在
+// Exists Determine the path of the path given/Whether the folder exists
 func Exists(path string) bool {
-	_, err := os.Stat(path) //os.Stat获取文件信息
+	_, err := os.Stat(path) //os.STAT obtain file information
 	if err != nil {
 		if os.IsExist(err) {
 			return true

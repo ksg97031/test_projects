@@ -11,3 +11,8 @@ test
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 1.txt
+.vscode
+cmd/config.yaml
+cmd/__debug*
+cmd/db
+cmd/github

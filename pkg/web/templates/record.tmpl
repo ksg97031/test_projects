@@ -7,7 +7,7 @@
     <script src="https://cdn.staticfile.org/twitter-bootstrap/5.2.3/js/bootstrap.bundle.min.js"></script>
 
     <link href='/static/record.css' rel='stylesheet'>
-    <title>弈 以有算无</title>
+    <title>Yi Yitu</title>
 </head>
 
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
@@ -22,23 +22,23 @@
         <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
             <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
                 <svg class="bi me-2" width="40" height="32"><use xlink:href="#yi"/></svg>
-                <span class="fs-4">弈 以有算无</span>
+                <span class="fs-4">Yi Yitu</span>
             </a>
 
             <ul class="nav nav-pills">
-                <li class="nav-item"><a href="/index" class="nav-link">监控项目</a></li>
-                <li class="nav-item"><a href="/unhandled" class="nav-link">漏洞信息</a></li>
+                <li class="nav-item"><a href="/index" class="nav-link">Monitoring project</a></li>
+                <li class="nav-item"><a href="/unhandled" class="nav-link">Vulnerability information</a></li>
                 {{if eq .msg 0}}
-                    <li class="nav-item"><a href="/record" class="nav-link active">记录</a></li>
+                    <li class="nav-item"><a href="/record" class="nav-link active">Record</a></li>
                 {{ else}}
                     <li class="nav-item position-relative">
-                        <a href="/record" class="nav-link active" aria-current="page">记录</a>
+                        <a href="/record" class="nav-link active" aria-current="page">Record</a>
                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">{{ .msg }}+
                             <span class="visually-hidden">unread messages</span>
                         </span>
                     </li>
                 {{ end }}
-                <li class="nav-item"><a href="/about" class="nav-link">关于</a></li>
+                <li class="nav-item"><a href="/about" class="nav-link">about</a></li>
             </ul>
         </header>
     </div>

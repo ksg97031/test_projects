@@ -46,8 +46,8 @@ var Pwd string
 
 var ProgressBar map[string]float32
 
-// Languages Codeql支持的语言，这里要根据机器上的配置，若要支持其他语言，请自行安装语言，以及指定对应语言的 codeql 规则
-var Languages = []string{"Go", "Java"}
+// Languages Codeql supports language. Here
+var Languages = []string{"Python"}
 
 func ParseArguments() {
 
@@ -107,7 +107,7 @@ func ParseArguments() {
 
 	Option.Session = utils.NewSession(Option.Proxy)
 
-	// 生成配置文件，并监控更改
+	// Generate configuration files and monitor changes
 	Init()
 	HotConf()
 

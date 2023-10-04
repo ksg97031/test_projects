@@ -3,9 +3,10 @@ package utils
 import (
 	"Yi/pkg/logging"
 	"crypto/tls"
-	"go.uber.org/ratelimit"
 	"net/http"
 	"net/url"
+
+	"go.uber.org/ratelimit"
 )
 
 /**
@@ -18,7 +19,7 @@ type Session struct {
 	// Client is the current http client
 	Client *http.Client
 	// Rate limit instance
-	RateLimiter ratelimit.Limiter // 每秒请求速率限制
+	RateLimiter ratelimit.Limiter // Restriction of request rate per second
 }
 
 func NewSession(proxy string) *Session {
@@ -48,7 +49,7 @@ func NewSession(proxy string) *Session {
 		Client: client,
 	}
 
-	// github api 访问加上 token 的访问速率为每小时 5000 次，平均下来每秒一次多，这里限制为每秒访问一次 github
+	// Github API access plus the access rate of Token is 5,000 times per hour, and the average of more than one second is more than once per second.
 	session.RateLimiter = ratelimit.New(1)
 
 	return session

@@ -2,6 +2,7 @@ package db
 
 import (
 	"fmt"
+
 	"gorm.io/gorm"
 )
 
@@ -35,14 +36,14 @@ func AddProject(project Project) (int, int) {
 		Url:     project.Url,
 		Color:   "success",
 		Title:   project.Project,
-		Msg:     fmt.Sprintf("%s 添加成功", project.Url),
+		Msg:     fmt.Sprintf("%s Add successfully", project.Url),
 	}
 	AddRecord(record)
 
 	return project.Id, project.Count
 }
 
-// GetProjects 查看项目信息
+// GetProjects View Program Information
 func GetProjects(pageNum int, pageSize int, maps interface{}) (count int64, projects []Project) {
 	globalDBTmp := GlobalDB.Model(&Project{})
 	query := maps.(map[string]interface{})
@@ -65,7 +66,7 @@ func GetProjects(pageNum int, pageSize int, maps interface{}) (count int64, proj
 	return
 }
 
-// UpdateProjectArg 更新字段
+// UpdateProjectArg Update Fields
 func UpdateProjectArg(id int, arg string, count int) bool {
 	globalDBTmp := GlobalDB.Model(&Project{})
 	globalDBTmp.Where("id = ?", id).Update(arg, count)
@@ -77,7 +78,7 @@ func DeleteProject(id string) {
 	globalDBTmp.Where("id = ?", id).Unscoped().Delete(&Project{})
 }
 
-// Exist  判断数据库中ip、端口是否存在
+// Exist  Determine whether ip and port exist in the database
 func Exist(url string) (bool, Project) {
 	var project Project
 	globalDBTmp := GlobalDB.Model(&Project{})

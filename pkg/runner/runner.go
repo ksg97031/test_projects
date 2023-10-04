@@ -5,11 +5,12 @@ import (
 	"Yi/pkg/logging"
 	"Yi/pkg/utils"
 	"fmt"
-	jsoniter "github.com/json-iterator/go"
-	"github.com/thoas/go-funk"
 	"os"
 	"strings"
 	"sync"
+
+	jsoniter "github.com/json-iterator/go"
+	"github.com/thoas/go-funk"
 )
 
 /**
@@ -116,7 +117,7 @@ func Run() {
 	wg.Wait()
 	close(limit)
 
-	// 全部运行完后，开始对出错的项目进行重试
+	// After all running, you will start trying the wrong projects
 	IsRetry = true
 }
 
@@ -142,7 +143,7 @@ var LocationMaps = make(map[string]bool)
 
 func Exec(project db.Project, qls []string) {
 	if !funk.Contains(Languages, project.Language) || project.DBPath == "" {
-		logging.Logger.Debugf("(%s)当前语言不支持(%s)/数据库为空(%s)", project.Project, project.Language, project.DBPath)
+		logging.Logger.Debugf("(%s)The current language does not support(%s)/The database is empty(%s)", project.Project, project.Language, project.DBPath)
 		return
 	}
 
@@ -199,7 +200,7 @@ func Exec(project db.Project, qls []string) {
 				logging.Logger.Infof("%s(%s) Found: %s", project.Project, fileName, results.Get(i).Get("ruleId").ToString())
 			}
 		} else {
-			err := os.Remove(fileName) //删除文件
+			err := os.Remove(fileName) //Delete Files
 
 			if err != nil {
 				logging.Logger.Infof("file remove Error! %s\n", err)
@@ -222,7 +223,7 @@ func ApiAdd(target, tag string) {
 				Url:     target,
 				Color:   "danger",
 				Title:   target,
-				Msg:     fmt.Sprintf("%s 添加失败 %v", target, err),
+				Msg:     fmt.Sprintf("%s add failed %v", target, err),
 			}
 			db.AddRecord(record)
 			return
@@ -247,7 +248,7 @@ func ApiAdd(target, tag string) {
 			Url:     project.Url,
 			Color:   "success",
 			Title:   project.Project,
-			Msg:     fmt.Sprintf("%s 已存在，重新运行", project.Url),
+			Msg:     fmt.Sprintf("%s Already, reorganize", project.Url),
 		}
 		db.AddRecord(record)
 	}

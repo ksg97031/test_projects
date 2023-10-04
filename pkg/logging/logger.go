@@ -2,15 +2,16 @@ package logging
 
 import (
 	"fmt"
-	"github.com/rifflock/lfshook"
 	"os"
+
+	"github.com/rifflock/lfshook"
 
 	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
 	"github.com/sirupsen/logrus"
 )
 
-var stdFormatter *TextFormatter  // 命令行输出格式
-var fileFormatter *TextFormatter // 文件输出格式
+var stdFormatter *TextFormatter  // Command Line Output Format
+var fileFormatter *TextFormatter // File output format
 
 var Logger *logrus.Logger
 

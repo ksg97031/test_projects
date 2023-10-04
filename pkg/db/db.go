@@ -2,6 +2,7 @@ package db
 
 import (
 	"Yi/pkg/logging"
+
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	dblogger "gorm.io/gorm/logger"

@@ -10,18 +10,18 @@ import (
 /**
   @author: yhy
   @since: 2023/2/16
-  @desc: 数据库生成错误的进行重试
+  @desc: Database generates errors for retry
 **/
 
 var IsRetry bool
 
-// Retry  todo 不优雅
+// Retry Todo is not elegant
 func Retry() {
 	var wg sync.WaitGroup
 	limit := make(chan bool, Option.Thread)
 
 	for {
-		if IsRetry { // 运行完再进行重试, 就不用协程了，一个个跑
+		if IsRetry { // After the runtime, you will not need an coroutine, one by one, one by one
 			for _, perr := range RetryProject {
 				if !IsRetry {
 					break
@@ -35,18 +35,18 @@ func Retry() {
 						<-limit
 						wg.Done()
 					}()
-					logging.Logger.Printf("项目(%s)重试", p.Url)
+					logging.Logger.Printf("Project (%S) Review", p.Url)
 
 					_, project := db.Exist(p.Url)
 
 					if p.Code == 1 {
-						// 从 github 获取
+						// Get from github
 						_, dbPath, res := GetRepos(p.Url)
 						project.DBPath = dbPath
 						project.Language = res.Language
 						project.PushedAt = res.PushedAt
 						project.DefaultBranch = res.DefaultBranch
-					} else if p.Code == 2 { // 手动生成
+					} else if p.Code == 2 { // Manually
 						project.DBPath = CreateDb(p.Url, project.Language)
 					}
 

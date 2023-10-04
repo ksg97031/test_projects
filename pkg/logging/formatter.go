@@ -376,7 +376,7 @@ func prefixFieldClashes(data logrus.Fields) {
 	}
 }
 
-// SplitLast 字符串分割获取最后一位
+// SplitLast String splitting to get the last bit
 func SplitLast(str, sep string) string {
 	arr := strings.Split(str, sep)
 	return arr[len(arr)-1]

@@ -8,14 +8,11 @@ package web
 
 import (
 	"Yi/pkg/db"
+	"Yi/pkg/logging"
 	"Yi/pkg/runner"
 	"Yi/pkg/utils"
 	"embed"
 	"fmt"
-	"github.com/gin-contrib/pprof"
-	"github.com/gin-gonic/gin"
-	jsoniter "github.com/json-iterator/go"
-	"github.com/thoas/go-funk"
 	"html/template"
 	"io/fs"
 	"net/http"
@@ -23,6 +20,11 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/gin-contrib/pprof"
+	"github.com/gin-gonic/gin"
+	jsoniter "github.com/json-iterator/go"
+	"github.com/thoas/go-funk"
 )
 
 type Vul struct {
@@ -47,13 +49,13 @@ func Init() {
 
 	router.Static("/db/results/", "./db/results/")
 
-	// 静态资源加载
+	// Static resource load
 	router.StaticFS("/static", mustFS())
 
-	// 设置模板资源
+	// Set template resource
 	router.SetHTMLTemplate(template.Must(template.New("").ParseFS(templates, "templates/*")))
 
-	// basic 认证
+	// basic Authentication
 	authorized := router.Group("/", gin.BasicAuth(gin.Accounts{
 		runner.Option.UserName: runner.Option.Pwd,
 	}))
@@ -128,7 +130,7 @@ func Init() {
 				Url:     url,
 				Color:   "success",
 				Title:   url,
-				Msg:     fmt.Sprintf("%s 添加成功, 正在生成数据库...", url),
+				Msg:     fmt.Sprintf("%s Added successfully, and is generating databases...", url),
 			}
 			db.AddRecord(record)
 
@@ -309,9 +311,9 @@ func Init() {
 		f := strings.Split(fileDir, "/")
 
 		fileName := f[len(f)-1]
-		//打开文件
+		//open a file
 		_, errByOpenFile := os.Open(fileDir)
-		//非空处理
+		//Non -air treatment
 		if errByOpenFile != nil {
 			c.Redirect(http.StatusFound, "/404")
 			return
@@ -324,7 +326,9 @@ func Init() {
 	})
 
 	pprof.Register(router)
+	logging.Logger.Infoln("WebSite Start ... PORT: " + runner.Option.Port)
 	router.Run(":" + runner.Option.Port)
+
 }
 
 func mustFS() http.FileSystem {

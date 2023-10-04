@@ -4,11 +4,12 @@ import (
 	"Yi/pkg/logging"
 	"Yi/pkg/utils"
 	"bytes"
-	"github.com/fsnotify/fsnotify"
-	"github.com/spf13/viper"
 	"os"
 	"path"
 	"path/filepath"
+
+	"github.com/fsnotify/fsnotify"
+	"github.com/spf13/viper"
 )
 
 /**
@@ -18,42 +19,41 @@ import (
 **/
 
 type QLFile struct {
-	GoQL   []string `mapstructure:"go_ql"`
-	JavaQL []string `mapstructure:"java_ql"`
+	PythonQL []string `mapstructure:"python_ql"`
 }
 
 var QLFiles *QLFile
 
-// HotConf 使用 viper 对配置热加载
+// HotConf uses viper to hot load configurations.
 func HotConf() {
 	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
 	if err != nil {
 		logging.Logger.Fatalf("cmd.HotConf, fail to get current path: %v", err)
 	}
-	// 配置文件路径 当前文件夹 + config.yaml
+	// Configuration file path Current folder + config.yaml
 	configFile := path.Join(dir, ConfigFileName)
 	viper.SetConfigType("yaml")
 	viper.SetConfigFile(configFile)
 
-	// watch 监控配置文件变化
+	// watch monitors configuration file changes
 	viper.WatchConfig()
 	viper.OnConfigChange(func(e fsnotify.Event) {
-		// 配置文件发生变更之后会调用的回调函数
+		// Callback functions that are called after a change in the configuration file
 		logging.Logger.Infoln("config file changed: ", e.Name)
 		oldQls := QLFiles
 		ReadYamlConfig(configFile)
 		newQls := QLFiles
-		// 规则更新时，从数据库中获取项目，用新规则跑一遍
+		// When the rule is updated, get the item from the database and run it through with the new rule
 		NewRules(oldQls, newQls)
 	})
 }
 
-// Init 加载配置
+// Init Load Configuration
 func Init() {
-	//配置文件路径 当前文件夹 + config.yaml
+	//Configuration file path Current folder + config.yaml
 	configFile := path.Join(Pwd, ConfigFileName)
 
-	// 检测配置文件是否存在
+	// Detecting the existence of a configuration file
 	if !utils.Exists(configFile) {
 		WriteYamlConfig(configFile)
 		logging.Logger.Infof("%s not find, Generate profile.", configFile)
@@ -65,7 +65,7 @@ func Init() {
 }
 
 func ReadYamlConfig(configFile string) {
-	// 加载config
+	// load config
 	viper.SetConfigType("yaml")
 	viper.SetConfigFile(configFile)
 
@@ -80,13 +80,13 @@ func ReadYamlConfig(configFile string) {
 }
 
 func WriteYamlConfig(configFile string) {
-	// 生成默认config
+	// Generate default config
 	viper.SetConfigType("yaml")
 	err := viper.ReadConfig(bytes.NewBuffer(defaultYamlByte))
 	if err != nil {
 		logging.Logger.Fatalf("setting.Setup, fail to read default config bytes: %v", err)
 	}
-	// 写文件
+	// write a file
 	err = viper.SafeWriteConfigAs(configFile)
 	if err != nil {
 		logging.Logger.Fatalf("setting.Setup, fail to write 'config.yaml': %v", err)

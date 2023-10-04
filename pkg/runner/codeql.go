@@ -21,14 +21,12 @@ import (
 **/
 
 func Analyze(database string, name string, language string, qls []string) map[string]string {
-	if language == "Go" {
-		qls = QLFiles.GoQL
-	} else if language == "Java" {
-		qls = QLFiles.JavaQL
+	if language == "Python" {
+		qls = QLFiles.PythonQL
 	}
 
 	if len(qls) == 0 {
-		logging.Logger.Debugln("qls = 0")
+		logging.Logger.Debugln("len(qls) = 0")
 		return nil
 	}
 
@@ -41,8 +39,8 @@ func Analyze(database string, name string, language string, qls []string) map[st
 		fileName := fmt.Sprintf("%s/%d.json", filePath, time.Now().Unix())
 		cmd := exec.Command("codeql", "database", "analyze", "--rerun", database, Option.Path+ql, "--format=sarif-latest", "-o", fileName)
 		var stdout, stderr bytes.Buffer
-		cmd.Stdout = &stdout // 标准输出
-		cmd.Stderr = &stderr // 标准错误
+		cmd.Stdout = &stdout // standard output
+		cmd.Stderr = &stderr // standard error
 		err := cmd.Run()
 		_, errStr := string(stdout.Bytes()), string(stderr.Bytes())
 		if err != nil {
@@ -72,14 +70,14 @@ func Analyze(database string, name string, language string, qls []string) map[st
 		Url:     name,
 		Color:   "success",
 		Title:   name,
-		Msg:     fmt.Sprintf("%s 分析完毕", name),
+		Msg:     fmt.Sprintf("%s end of analysis", name),
 	}
 	ProgressBar[name] = 100
 	db.AddRecord(record)
 	return res
 }
 
-// CreateDb 拉取仓库，本地创建数据库
+// CreateDb pulls repository, creates database locally
 func CreateDb(gurl, languages string) string {
 	dbName := utils.GetName(gurl)
 	err := GitClone(gurl, dbName)
@@ -89,11 +87,11 @@ func CreateDb(gurl, languages string) string {
 		return ""
 	}
 
-	// todo 批量跑就抽风，导致有的项目无法生成数据库 "There's no CodeQL extractor named 'Go' installed."
+	// The todo batch run just jerked around, causing some projects to fail to generate a database "There's no CodeQL extractor named 'Go' installed."
 	cmd := exec.Command("codeql", "database", "create", DirNames.DbDir+dbName, "-s", DirNames.GithubDir+dbName, "--language="+strings.ToLower(languages), "--overwrite")
 	var stdout, stderr bytes.Buffer
-	cmd.Stdout = &stdout // 标准输出
-	cmd.Stderr = &stderr // 标准错误
+	cmd.Stdout = &stdout // standard output
+	cmd.Stderr = &stderr // standard error
 	err = cmd.Run()
 	out, errStr := string(stdout.Bytes()), string(stderr.Bytes())
 	if err != nil {
@@ -101,13 +99,13 @@ func CreateDb(gurl, languages string) string {
 		return ""
 	}
 
-	// 很奇怪，有的生成数据库不是在项目目录下，而是在第二级目录下
+	// It's strange that some of the generated databases are not in the project directory, but in the second level directory
 	dbPath := filepath.Dir(path.Join(utils.CodeqlDb(DirNames.DbDir+dbName), "*"))
 	logging.Logger.Debugln(gurl, " CreateDb success")
 	return dbPath
 }
 
-// UpdateRule 每天拉取一下官方仓库，更新规则
+// UpdateRule pulls the official repository every day to update the rules
 func UpdateRule() {
 	if Option.Path != "" {
 		_, err := utils.RunGitCommand(Option.Path, "git", "pull")
@@ -116,12 +114,12 @@ func UpdateRule() {
 			Url:     "CodeQL Rules",
 			Color:   "success",
 			Title:   "CodeQL Rules",
-			Msg:     "CodeQL Rules 更新成功",
+			Msg:     "CodeQL Rules Successful update",
 		}
 
 		if err != nil {
 			record.Color = "danger"
-			record.Msg = fmt.Sprintf("CodeQL Rules 更新失败, %s", err.Error())
+			record.Msg = fmt.Sprintf("CodeQL Rules update failure, %s", err.Error())
 		}
 
 		db.AddRecord(record)

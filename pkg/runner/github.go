@@ -7,9 +7,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/corpix/uarand"
-	jsoniter "github.com/json-iterator/go"
-	"github.com/thoas/go-funk"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -17,6 +14,10 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
+
+	"github.com/corpix/uarand"
+	jsoniter "github.com/json-iterator/go"
+	"github.com/thoas/go-funk"
 )
 
 /**
@@ -31,7 +32,7 @@ type GithubRes struct {
 	DefaultBranch string `json:"default_branch"`
 }
 
-// ProError 项目数据库获取错误的,进行重试
+// ProError Retry if the project database is fetched incorrectly.
 type ProError struct {
 	Url  string
 	Code int
@@ -39,18 +40,19 @@ type ProError struct {
 
 var RetryProject = make(map[string]ProError)
 
-// GetRepos 从 github 下载构建好的数据库
+// GetRepos from github Download and build a good database
 func GetRepos(url_tmp string) (error, string, GithubRes) {
 	// https://github.com/prometheus/prometheus  -> https://api.github.com/repos/prometheus/prometheus
 	guri := strings.ReplaceAll(url_tmp, "github.com", "api.github.com/repos")
 
 	res := GetTimeBran(guri, url_tmp)
-	// https://api.github.com/repos/grafana/grafana 这里只会显示项目中使用最多的语言，但并不一定是项目的主语言，比如这个显示TypeScript，但其实用了 Go 写的
+	// https://api.github.com/repos/grafana/grafana Here will only display the most language in the project, but it is not necessarily the main language of the project. For example
 
 	var flag bool
-	// repos 中的语言只是占比最多的语言种类，有可能 go 写的 typescript 占比最多
-	res.Language, flag = GetLanguage(guri, url_tmp) // todo 现在只是适配 Go,java 语言，后期尽量适配主流语言是，目前主力只看 Go 项目
+	// repos The language in the middle is only the type of language with the most proportion. It is possible that the TypeScript written by GoScript is the most proportion.
+	res.Language, flag = GetLanguage(guri, url_tmp) // todo Now I just adapt to GO, Java language, and try to adapt to the mainstream language in the later period. At present
 
+	logging.Logger.Debugln(url_tmp, " language: ", res.Language)
 	if flag {
 		guri = fmt.Sprintf("%s/code-scanning/codeql/databases/%s", guri, res.Language)
 	} else {
@@ -58,7 +60,9 @@ func GetRepos(url_tmp string) (error, string, GithubRes) {
 	}
 
 	err, dbPath, code := GetDb(guri, url_tmp, res.Language)
-	if code != 0 { // 没有生成对应的数据库
+	logging.Logger.Debugln(url_tmp, " dbPath: ", dbPath)
+	if code != 0 { // No corresponding database is generated
+		logging.Logger.Debugln(url_tmp, " GetDb err: ", err)
 		RetryProject[url_tmp] = ProError{
 			Url:  url_tmp,
 			Code: code,
@@ -67,7 +71,7 @@ func GetRepos(url_tmp string) (error, string, GithubRes) {
 	return err, dbPath, res
 }
 
-// GetTimeBran 获取项目的更新时间和主分支 https://api.github.com/repos/prometheus/prometheus
+// Gettimebran gets the project update time and main branch https://api.github.com/repos/prometheus/prometheus
 func GetTimeBran(guri, url_tmp string) GithubRes {
 	req, _ := http.NewRequest("GET", guri, nil)
 	req.Header.Set("Accept", "application/vnd.github.v3.text-match+json")
@@ -83,7 +87,7 @@ func GetTimeBran(guri, url_tmp string) GithubRes {
 
 	if err != nil {
 		logging.Logger.Errorln("GetRepos client.Do(req) err:", err)
-		// 网络错误导致的，需要重试
+		// Caused by network errors, you need to try it out
 		RetryProject[url_tmp] = ProError{
 			Url:  url_tmp,
 			Code: 1,
@@ -100,7 +104,7 @@ func GetTimeBran(guri, url_tmp string) GithubRes {
 	return res
 }
 
-// GetLanguage 获取项目的代码语言  https://api.github.com/repos/prometheus/prometheus/languages
+// GetLanguage Obtain the code language of the project  https://api.github.com/repos/prometheus/prometheus/languages
 func GetLanguage(guri, url_tmp string) (string, bool) {
 	req, _ := http.NewRequest("GET", guri+"/languages", nil)
 	req.Header.Set("Accept", "application/vnd.github.v3.text-match+json")
@@ -114,7 +118,7 @@ func GetLanguage(guri, url_tmp string) (string, bool) {
 
 	if err != nil {
 		logging.Logger.Errorln("GetLanguage client.Do(req) err:", err)
-		// 网络错误导致的，需要重试
+		// Caused by network errors, you need to try it out
 		RetryProject[url_tmp] = ProError{
 			Url:  url_tmp,
 			Code: 1,
@@ -133,7 +137,7 @@ func GetLanguage(guri, url_tmp string) (string, bool) {
 
 		var m float64 = 1
 
-		// 去除 HTML,TypeScript,JavaScript,CSS,SCSS 这些玩意，之后，该项目的编写语言就是使用最多的语言
+		// Remove HTML, TypeScript, JavaScript, CSS, SCSS, and later, the language of the project is used to use the most useful language
 		for k, v := range jsoniter.Get(body).GetInterface().(map[string]interface{}) {
 			if funk.Contains(k, "HTML") || funk.Contains(k, "TypeScript") || funk.Contains(k, "JavaScript") || funk.Contains(k, "CSS") || funk.Contains(k, "SCSS") {
 				continue
@@ -158,11 +162,11 @@ func GetLanguage(guri, url_tmp string) (string, bool) {
 	return language, false
 }
 
-// GetDb 下载/生成 数据库  https://api.github.com/repos/prometheus/prometheus/code-scanning/codeql/databases/{languages}
+// Getdb download/generate database https://api.github.com/repos/prometheus/prometheus/code-sCanning/Codeql/databases/ {languages}
 /*
-	0 : 成功
-	1 : 网络或文件创建错误
-	2 : github上没有生成对应的数据库
+0: Success
+1: Network or file creation error
+2: No corresponding database is generated on github
 */
 func GetDb(guri, url, languages string) (error, string, int) {
 	req, _ := http.NewRequest("GET", guri, nil)
@@ -200,7 +204,7 @@ func GetDb(guri, url, languages string) (error, string, int) {
 			logging.Logger.Errorln(url, " HttpRequest io.Copy err: ", err)
 			return err, "", 1
 		}
-	} else { // 说明 该项目没有在 github配置 codeql 扫描(404)，或者项目所有者配置了访问需要权限(403)
+	} else { // Explain that the project does not configure CodeQL scan (404) in GitHub, or the project owner is configured with access required (403)
 		dbPath = CreateDb(url, languages)
 		if dbPath == "" {
 			return err, "", 2
@@ -220,7 +224,7 @@ func GetDb(guri, url, languages string) (error, string, int) {
 	return nil, dbPath, 0
 }
 
-// CheckUpdate 检查项目是否更新
+// CheckUpdate Check whether the item is updated
 func CheckUpdate(project db.Project) (bool, string, string) {
 	guri := strings.ReplaceAll(project.Url, "github.com", "api.github.com/repos")
 
@@ -231,19 +235,19 @@ func CheckUpdate(project db.Project) (bool, string, string) {
 		code   int
 	)
 
-	if project.PushedAt < res.PushedAt { // 说明更新了
+	if project.PushedAt < res.PushedAt { // Explain the update
 
 		guri = fmt.Sprintf("%s/code-scanning/codeql/databases/%s", guri, project.Language)
 
 		_, dbPath, code = GetDb(guri, project.Url, project.Language)
 
-		if code != 0 { // 没有生成对应的数据库
+		if code != 0 { // No corresponding database is generated
 			RetryProject[project.Url] = ProError{
 				Url:  project.Url,
 				Code: code,
 			}
 		} else {
-			// 是否在重试列表中
+			// Are you in the list of reviews?
 			delete(RetryProject, project.Url)
 		}
 	}
@@ -254,8 +258,8 @@ func CheckUpdate(project db.Project) (bool, string, string) {
 			Project: project.Project,
 			Url:     project.Url,
 			Color:   "warning",
-			Title:   project.Project + " 更新",
-			Msg:     fmt.Sprintf("%s 项目更新, 重新生成Codeql数据库", project.Url),
+			Title:   project.Project + " renew",
+			Msg:     fmt.Sprintf("%s Project update, Re -generate Codeql database", project.Url),
 		}
 		db.AddRecord(record)
 

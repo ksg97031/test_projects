@@ -2,8 +2,6 @@ package utils
 
 import (
 	"fmt"
-	"github.com/dustin/go-humanize"
-	"github.com/thoas/go-funk"
 	"math/rand"
 	"os"
 	"os/exec"
@@ -11,6 +9,9 @@ import (
 	"sort"
 	"strings"
 	"time"
+
+	"github.com/dustin/go-humanize"
+	"github.com/thoas/go-funk"
 )
 
 /**
@@ -48,7 +49,7 @@ func GetName(path string) string {
 	return ss[len(ss)-1]
 }
 
-// WriteCounter 下载进度条
+// WriteCounter Download progress bar
 type WriteCounter struct {
 	Total    uint64
 	FileName string
@@ -77,7 +78,7 @@ func RandStr() string {
 	return string(result)
 }
 
-// CodeqlDb 获取文件夹下 codeql-database.yml 的上级目录路径
+// CodeqlDb Get the folder codeql-database.yml Update
 func CodeqlDb(dir string) string {
 	var filePath string
 	var walkFunc = func(path string, info os.FileInfo, err error) error {
@@ -110,28 +111,28 @@ func isSupportedProtocol(value string) bool {
 	return value == "http" || value == "https" || value == "socks5"
 }
 
-// Difference 找出更改的规则，如果是新增了，则运行该规则，删除则不运行
+// Difference Find out the rules of the change. If it is added, it runs this rule.
 func Difference(old, new []string) []string {
 	_, s2 := funk.Difference(old, new)
 
-	// {"1", "2", "5"} {"3", "5"} 结果 [1 2] [3]
-	// {"1", "2", "3", "4"} {"1", "2", "3"} 结果 [4] []
+	// {"1", "2", "5"} {"3", "5"} result [1 2] [3]
+	// {"1", "2", "3", "4"} {"1", "2", "3"} result [4] []
 
 	return s2.([]string)
 }
 
-// RunGitCommand 执行任意Git命令的封装
+// RunGitCommand Execute the encapsulation of any git command
 func RunGitCommand(path, name string, arg ...string) (string, error) {
-	gitpath := path // 从配置文件中获取当前git仓库的路径
+	gitpath := path // Get the current Git warehouse from the configuration file
 
 	cmd := exec.Command(name, arg...)
-	cmd.Dir = gitpath                // 指定工作目录为git仓库目录
-	msg, err := cmd.CombinedOutput() // 混合输出stdout+stderr
+	cmd.Dir = gitpath                // Specify the working directory as the GIT warehouse directory
+	msg, err := cmd.CombinedOutput() // Hybrid output Stdout+stderr
 	err = cmd.Run()
 	if err != nil {
 		return "", err
 	}
 
-	// 报错时 exit status 1
+	// When an error is reported exit status 1
 	return string(msg), err
 }

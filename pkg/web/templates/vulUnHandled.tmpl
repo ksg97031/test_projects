@@ -24,14 +24,14 @@
             $('table td').each(function() {
                 var $ul = $(this).find('ul');
                 if ($ul.length > 0 && $ul.children().length > 5) {
-                    var $button = $('<button class="btn btn-sm btn-primary">展开/折叠</button>');
+                    var $button = $('<button class="btn btn-sm btn-primary">Expand/fold</button>');
                     var $hidden = $ul.children().slice(5).hide();
                     var $count = $('<span class="badge badge-secondary"></span>');
                     $count.text($hidden.length);
                     $button.append(' ').append($count);
                     $button.on('click', function() {
                         $hidden.toggle();
-                        $button.text($hidden.is(':visible') ? '折叠' : '展开 '+ $hidden.length);
+                        $button.text($hidden.is(':visible') ? 'fold' : 'Expand '+ $hidden.length);
                         $count.text($hidden.is(':visible') ? $hidden.length : '');
                     });
                     $(this).append($button);
@@ -39,7 +39,7 @@
             });
         });
     </script>
-    <title>弈 以有算无</title>
+    <title>Yi Yitu</title>
 </head>
 
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
@@ -54,23 +54,23 @@
         <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
             <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
                 <svg class="bi me-2" width="40" height="32"><use xlink:href="#yi"/></svg>
-                <span class="fs-4">弈 以有算无</span>
+                <span class="fs-4">Yi Yitu</span>
             </a>
 
             <ul class="nav nav-pills">
-                <li class="nav-item"><a href="/index" class="nav-link">监控项目</a></li>
-                <li class="nav-item"><a href="/unhandled" class="nav-link active" aria-current="page">漏洞信息</a></li>
+                <li class="nav-item"><a href="/index" class="nav-link">Monitoring project</a></li>
+                <li class="nav-item"><a href="/unhandled" class="nav-link active" aria-current="page">Vulnerability information</a></li>
                 {{if eq .msg 0}}
-                    <li class="nav-item"><a href="/record" class="nav-link">记录</a></li>
+                    <li class="nav-item"><a href="/record" class="nav-link">Record</a></li>
                 {{ else}}
                     <li class="nav-item position-relative">
-                        <a href="/record" class="nav-link" aria-current="page">记录</a>
+                        <a href="/record" class="nav-link" aria-current="page">Record</a>
                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">{{.msg}}+
                             <span class="visually-hidden">unread messages</span>
                         </span>
                     </li>
                 {{ end }}
-                <li class="nav-item"><a href="/about" class="nav-link">关于</a></li>
+                <li class="nav-item"><a href="/about" class="nav-link">about</a></li>
             </ul>
         </header>
     </div>
@@ -85,14 +85,14 @@
     <div class="container mt-3">
         <ul class="nav">
             <li class="nav-item col-11">
-                <h2 class="list-inline-item">漏洞信息 <text class="text-muted">({{ .total }}) {{.location}}</text></h2>
+                <h2 class="list-inline-item">Vulnerability information <text class="text-muted">({{ .total }}) {{.location}}</text></h2>
             </li>
         </ul>
     </div>
     <!-- Nav tabs -->
     <ul class="nav nav-tabs" role="tablist">
-        <li class="nav-item"><a class="nav-link active" href="/unhandled">未处理</a></li>
-        <li class="nav-item"><a href="/handled" class="nav-link">已处理</a></li>
+        <li class="nav-item"><a class="nav-link active" href="/unhandled">Not processed</a></li>
+        <li class="nav-item"><a href="/handled" class="nav-link">Processed</a></li>
     </ul>
 
     <div class="container mt-3">
@@ -128,17 +128,17 @@
                             <td class="text-center">{{ $value.PushedAt }}</td>
                             <td class="text-center">
                                 <button type="button" data-mdb-ripple-centered="true" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#del{{ $value.Id }}">删除</button>
-                                <!-- 模态框 -->
+                                <!-- Modal frame -->
                                 <div class="modal fade" id="del{{ $value.Id }}">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
-                                            <!-- 模态框头部 -->
+                                            <!-- Modal frame head -->
                                             <div class="modal-header">
-                                                <h4 class="modal-title">是否删除</h4>
+                                                <h4 class="modal-title">delete or not</h4>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                             </div>
                                             <form action="/del" method='GET'>
-                                                <!-- 模态框内容 -->
+                                                <!-- Modulus content -->
                                                 <div class="modal-body">
                                                     <div class="mb-3 mt-3">
                                                         <label for="url" class="form-label">{{ $value.Id }} {{ $value.Project }}</label>
@@ -146,8 +146,8 @@
                                                 </div>
                                                 <input type="hidden" name="id" value="{{ $value.Id }}">
                                                 <div class="modal-footer">
-                                                    <button type="submit" class="btn btn-danger">是</button>
-                                                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">否</button>
+                                                    <button type="submit" class="btn btn-danger">yes</button>
+                                                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">no</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -155,28 +155,28 @@
                                 </div>
 
                                 <button type="button" data-mdb-ripple-centered="true" class="btn btn-dark" data-bs-target="#blacklist{{ $value.Id }}" data-bs-toggle="modal">拉黑</button>
-                                <!-- 模态框 -->
+                                <!-- Modal frame -->
                                 <div class="modal fade" id="blacklist{{ $value.Id }}">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
-                                            <!-- 模态框头部 -->
+                                            <!-- Modal frame head -->
                                             <div class="modal-header">
-                                                <h4 class="modal-title">是否拉黑</h4>
+                                                <h4 class="modal-title">Whether to pull</h4>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                             </div>
 
                                             <form action="/blacklist" method='GET'>
                                                 <input type="hidden" name="id" value="{{ $value.Id }}">
-                                                <!-- 模态框内容 -->
+                                                <!-- Modulus content -->
                                                 <div class="modal-body">
                                                     <div class="mb-3 mt-3">
-                                                        <label for="url" class="form-label">拉黑的同时会删除!</label>
+                                                        <label for="url" class="form-label">It will be deleted while pulling black!</label>
                                                         <label for="url" class="form-label">{{ $value.Id }} {{ $value.Project }}</label>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="submit" class="btn btn-danger">是</button>
-                                                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">否</button>
+                                                    <button type="submit" class="btn btn-danger">yes</button>
+                                                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">no</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -185,11 +185,11 @@
 
                                 <div class="btn-group" role="group">
                                     <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                        其他
+                                        other
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                                        <li><a class="dropdown-item btn-outline-primary" href="/download?fileDir={{ $value.ResDir }}">下载</a></li>
-                                        <li><a class="dropdown-item btn-outline-primary" href="/setHandled?id={{ $value.Id }}">已处理</a></li>
+                                        <li><a class="dropdown-item btn-outline-primary" href="/download?fileDir={{ $value.ResDir }}">download</a></li>
+                                        <li><a class="dropdown-item btn-outline-primary" href="/setHandled?id={{ $value.Id }}">Processed</a></li>
                                     </ul>
                                 </div>
                             </td>
@@ -209,11 +209,11 @@
             {{if gt .paginator.PageNums 1}}
                 <ul class="pagination justify-content-center">
                     {{if .paginator.HasPrev}}
-                        <li class="page-item"><a class="page-link" href="{{.paginator.PageLinkFirst}}">首页</a></li>
-                        <li class="page-item"><a class="page-link" href="{{.paginator.PageLinkPrev}}">&lt;上一页</a></li>
+                        <li class="page-item"><a class="page-link" href="{{.paginator.PageLinkFirst}}">front page</a></li>
+                        <li class="page-item"><a class="page-link" href="{{.paginator.PageLinkPrev}}">&lt;Last page</a></li>
                     {{else}}
-                        <li class="page-item"><a class="page-link">首页</a></li>
-                        <li class="page-item"><a class="page-link">&lt;上一页</a></li>
+                        <li class="page-item"><a class="page-link">front page</a></li>
+                        <li class="page-item"><a class="page-link">&lt;Last page</a></li>
                     {{end}}
                     {{range $index, $page := .paginator.Pages}}
                         <li{{if $.paginator.IsActive .}} class="page-item active"{{end}}>
@@ -221,11 +221,11 @@
                         </li>
                     {{end}}
                     {{if .paginator.HasNext}}
-                        <li class="page-item"><a class="page-link" href="{{.paginator.PageLinkNext}}">下一页&gt;</a></li>
-                        <li class="page-item"><a class="page-link" href="{{.paginator.PageLinkLast}}">尾页</a></li>
+                        <li class="page-item"><a class="page-link" href="{{.paginator.PageLinkNext}}">Next page&gt;</a></li>
+                        <li class="page-item"><a class="page-link" href="{{.paginator.PageLinkLast}}">last page</a></li>
                     {{else}}
-                        <li class="page-item"><a class="page-link">下一页&gt;</a></li>
-                        <li class="page-item"><a class="page-link">尾页</a></li>
+                        <li class="page-item"><a class="page-link">Next page&gt;</a></li>
+                        <li class="page-item"><a class="page-link">last page</a></li>
                     {{end}}
                 </ul>
             {{end}}

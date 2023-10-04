@@ -14,7 +14,7 @@ import (
   @desc: //TODO
 **/
 
-var listfile []string //获取文件列表
+var listfile []string //Get the file list
 
 func Listfunc(path string, f os.FileInfo, err error) error {
 	var strRet string
@@ -38,7 +38,7 @@ func Listfunc(path string, f os.FileInfo, err error) error {
 
 	ok := strings.HasSuffix(strRet, ".ql")
 	if ok {
-		listfile = append(listfile, strRet) //将目录push到listfile []string中
+		listfile = append(listfile, strRet) //Push the directory push to listfile [] string
 	}
 
 	return nil

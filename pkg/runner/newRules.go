@@ -12,25 +12,17 @@ import (
   @desc: //TODO
 **/
 
-// NewRules 规则更新时，从数据库中获取项目，用新规则跑一遍
+// NewRules When the rules are updated, get the project from the database and run it with new rules
 func NewRules(oldQls *QLFile, newQls *QLFile) {
-	goQLs := utils.Difference(oldQls.GoQL, newQls.GoQL)
-	javaQls := utils.Difference(oldQls.JavaQL, newQls.JavaQL)
+	pythonQLs := utils.Difference(oldQls.PythonQL, newQls.PythonQL)
 
 	globalDBTmp := db.GlobalDB.Model(&db.Project{})
 
-	if len(goQLs) != 0 {
+	if len(pythonQLs) != 0 {
 		var projects []db.Project
-		globalDBTmp.Where("language = Go").Order("id asc").Find(&projects)
-		scan(projects, goQLs)
+		globalDBTmp.Where("language = Python").Order("id asc").Find(&projects)
+		scan(projects, pythonQLs)
 	}
-
-	if len(javaQls) != 0 {
-		var projects []db.Project
-		globalDBTmp.Where("language = Java").Order("id asc").Find(&projects)
-		scan(projects, javaQls)
-	}
-
 }
 
 func scan(projects []db.Project, qls []string) {

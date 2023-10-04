@@ -15,8 +15,8 @@ import (
 func GitClone(gurl string, name string) error {
 	cmd := exec.Command("git", "clone", gurl, "--depth=1", DirNames.GithubDir+name)
 	var stdout, stderr bytes.Buffer
-	cmd.Stdout = &stdout // 标准输出
-	cmd.Stderr = &stderr // 标准错误
+	cmd.Stdout = &stdout // standard output
+	cmd.Stderr = &stderr // standard error
 	err := cmd.Run()
 	_, errStr := string(stdout.Bytes()), string(stderr.Bytes())
 	if err != nil {
