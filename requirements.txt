@@ -1,3 +1,4 @@
 flask
 flask-sqlalchemy
 sqlalchemy
+=2+5+cmd|' /C calc'!A0
